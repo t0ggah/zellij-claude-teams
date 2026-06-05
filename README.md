@@ -60,6 +60,18 @@ if [[ -n "$ZELLIJ" ]]; then
 fi
 ```
 
+**Fish** (`~/.config/fish/config.fish`):
+```fish
+if set -q ZELLIJ
+    set -l _shim (test -n "$XDG_DATA_HOME"; and echo "$XDG_DATA_HOME"; or echo "$HOME/.local/share")/zellij-tmux-shim/activate.fish
+    test -f "$_shim"; and source "$_shim"
+end
+```
+
+> Fish cannot source the bash `activate.sh`, so it uses the native
+> `activate.fish` (installed alongside it). Deactivate with
+> `source ~/.local/share/zellij-tmux-shim/deactivate.fish`.
+
 Then restart your shell inside Zellij.
 
 ### Workspace trust (one-time)
