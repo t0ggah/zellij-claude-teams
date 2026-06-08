@@ -74,6 +74,28 @@ end
 
 Then restart your shell inside Zellij.
 
+### Enable Agent Teams (required)
+
+Agent Teams is **experimental and disabled by default** in Claude Code, and its
+split-pane (tmux) mode is what this shim hooks into. Enable both in
+`~/.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "tmux"
+}
+```
+
+- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"` turns the feature on. Without it,
+  Claude Code never spawns teammates and no panes appear.
+- `teammateMode: "tmux"` forces split-pane mode. (`"auto"` also works because the
+  shim sets `$TMUX`, but `"tmux"` is explicit.)
+
+Requires Claude Code v2.1.32+. Restart `claude` after changing settings.
+
 ### Workspace trust (one-time)
 
 Claude Code prompts for workspace trust per directory. To avoid each agent pane prompting individually, run `claude` once in your working directory and accept the trust dialog before using Agent Teams.

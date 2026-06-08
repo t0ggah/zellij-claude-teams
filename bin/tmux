@@ -262,10 +262,37 @@ display-message)
         '#{window_index}')
             echo "0"
             ;;
+        '#{client_control_mode}')
+            # 0 = not in tmux control mode (-CC). Returning a non-0/garbage
+            # value here can make Claude Code reject the tmux environment and
+            # fall back to in-process agents (no panes).
+            echo "0"
+            ;;
         *)
             log_debug "display-message: unhandled format '$local_format'"
             echo "main:0"
             ;;
+    esac
+    exit 0
+    ;;
+
+# --- show / show-options (startup capability probes) ---
+show|show-options|showw|show-window-options)
+    # Claude Code probes tmux options at startup (e.g. `show -gv focus-events`,
+    # `show -Av mouse`). Returning empty (the old catch-all behavior) can make
+    # it treat the tmux environment as unusable. Pull out the option name
+    # (last non-flag arg) and answer with a sane value.
+    so_opt=""
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -*) shift ;;
+            *)  so_opt="$1"; shift ;;
+        esac
+    done
+    case "$so_opt" in
+        focus-events) echo "on" ;;
+        mouse)        echo "off" ;;
+        *)            log_debug "show: defaulting option '$so_opt' to off"; echo "off" ;;
     esac
     exit 0
     ;;
